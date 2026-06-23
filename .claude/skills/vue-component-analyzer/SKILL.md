@@ -51,12 +51,13 @@ Work through these five zones sequentially. Do not skip zones even if they look 
 
 ### Zone 5: Cross-component reuse
 
-Run a quick grep before writing findings. Patterns worth extracting only when they appear in **2 or more components**:
+**Always run this grep first** — do not rely on memory or inference. Anchor findings to actual output:
 
 ```bash
-# Find duplicate function names across views
-grep -rn "function translate\|function format\|function get.*Class\|const loading\|const error" client/src/views/
+grep -rn "function translate\|function format\|function get.*Class\|const loading\|const error\|const currency" client/src/views/
 ```
+
+Patterns worth extracting only when they appear in **2 or more components** with **identical or near-identical logic**:
 
 | Pattern | Extract to |
 |---|---|
