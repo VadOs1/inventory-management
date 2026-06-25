@@ -22,7 +22,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-      issues: write
       id-token: write
 
     steps:
@@ -40,6 +39,7 @@ jobs:
           plugins: 'code-review@claude-code-plugins'
           prompt: '/code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
           show_full_output: true
+          claude_args: '--allowedTools Bash,Read,Write,mcp__github__*'
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 
