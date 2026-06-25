@@ -19,7 +19,7 @@ const createCurrentUser = () => {
 
     return {
       ...baseUserData,
-      name: isJapanese ? '田中 太郎' : 'John Doe',
+      name: isJapanese ? '田中 太郎' : 'Vados',
       jobTitle: isJapanese ? 'オペレーションマネージャー' : 'Operations Manager',
       department: isJapanese ? 'サプライチェーン運営部' : 'Supply Chain Operations',
       location: isJapanese ? 'サンフランシスコ' : 'San Francisco',

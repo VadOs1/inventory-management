@@ -29,6 +29,17 @@
             Reports
           </router-link>
         </nav>
+        <button class="theme-toggle" @click="toggleTheme" :title="theme === 'dark' ? 'Switch to light' : 'Switch to dark'">
+          <svg v-if="theme === 'dark'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+          </svg>
+        </button>
         <LanguageSwitcher />
         <ProfileMenu
           @show-profile-details="showProfileDetails = true"
@@ -149,6 +160,14 @@ export default {
       }
     }
 
+    const theme = ref(localStorage.getItem('theme') || 'light')
+    document.documentElement.dataset.theme = theme.value
+    const toggleTheme = () => {
+      theme.value = theme.value === 'light' ? 'dark' : 'light'
+      document.documentElement.dataset.theme = theme.value
+      localStorage.setItem('theme', theme.value)
+    }
+
     onMounted(loadTasks)
 
     return {
@@ -158,13 +177,81 @@ export default {
       tasks,
       addTask,
       deleteTask,
-      toggleTask
+      toggleTask,
+      theme,
+      toggleTheme
     }
   }
 }
 </script>
 
 <style>
+:root {
+  --accent: #635BFF;
+  --accent-hover: #564FD8;
+  --accent-subtle: #F2F1FF;
+  --accent-text: #4B45BE;
+  --accent-border: #CDC9FF;
+  --bg-app: #FFFFFF;
+  --bg-subtle: #F6F9FC;
+  --bg-muted: #EDF1F7;
+  --surface-card: #FFFFFF;
+  --border: #E3E8EE;
+  --border-subtle: #EDF1F7;
+  --border-strong: #C1C9D2;
+  --text-primary: #0A2540;
+  --text-secondary: #425466;
+  --text-tertiary: #697386;
+  --text-muted: #8792A2;
+  --success: #149A5C;
+  --success-text: #0E6245;
+  --success-subtle: #E3F9EE;
+  --warning: #C77700;
+  --warning-text: #983705;
+  --warning-subtle: #FCF0DD;
+  --danger: #DF1B41;
+  --danger-text: #A8102F;
+  --danger-subtle: #FCE9EC;
+  --info: #0073E6;
+  --info-text: #00529C;
+  --info-subtle: #E0F0FF;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 999px;
+}
+
+[data-theme="dark"] {
+  --bg-app: #0A1120;
+  --bg-subtle: #0E1729;
+  --bg-muted: #13203A;
+  --surface-card: #111B30;
+  --border: #243149;
+  --border-subtle: #1A2741;
+  --border-strong: #33425F;
+  --text-primary: #F6F9FC;
+  --text-secondary: #AEBAD0;
+  --text-tertiary: #8A98B5;
+  --text-muted: #647391;
+  --accent: #877DFF;
+  --accent-hover: #ADA6FF;
+  --accent-subtle: #1B2444;
+  --accent-text: #CDC9FF;
+  --accent-border: #34367A;
+  --success: #3ECF8E;
+  --success-text: #5BE0A0;
+  --success-subtle: #0E271E;
+  --warning: #F5A623;
+  --warning-text: #FBC560;
+  --warning-subtle: #2A1E0A;
+  --danger: #FF5C77;
+  --danger-text: #FF8E9F;
+  --danger-subtle: #2A1118;
+  --info: #5B9DFF;
+  --info-text: #8FBEFF;
+  --info-subtle: #0E1E37;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -173,8 +260,8 @@ export default {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: #f8fafc;
-  color: #1e293b;
+  background: var(--bg-subtle);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -186,8 +273,8 @@ body {
 }
 
 .top-nav {
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--border);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
@@ -221,16 +308,16 @@ body {
 .logo h1 {
   font-size: 1.375rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-primary);
   letter-spacing: -0.025em;
 }
 
 .subtitle {
   font-size: 0.813rem;
-  color: #64748b;
+  color: var(--text-tertiary);
   font-weight: 400;
   padding-left: 0.75rem;
-  border-left: 1px solid #e2e8f0;
+  border-left: 1px solid var(--border);
 }
 
 .nav-tabs {
@@ -240,23 +327,23 @@ body {
 
 .nav-tabs a {
   padding: 0.625rem 1.25rem;
-  color: #64748b;
+  color: var(--text-tertiary);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.938rem;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   transition: all 0.2s ease;
   position: relative;
 }
 
 .nav-tabs a:hover {
-  color: #0f172a;
-  background: #f1f5f9;
+  color: var(--text-primary);
+  background: var(--bg-muted);
 }
 
 .nav-tabs a.active {
-  color: #2563eb;
-  background: #eff6ff;
+  color: var(--accent-text);
+  background: var(--accent-subtle);
 }
 
 .nav-tabs a.active::after {
@@ -266,7 +353,7 @@ body {
   left: 0;
   right: 0;
   height: 2px;
-  background: #2563eb;
+  background: var(--accent);
 }
 
 .main-content {
@@ -284,13 +371,13 @@ body {
 .page-header h2 {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-primary);
   margin-bottom: 0.375rem;
   letter-spacing: -0.025em;
 }
 
 .page-header p {
-  color: #64748b;
+  color: var(--text-tertiary);
   font-size: 0.938rem;
 }
 
@@ -302,20 +389,20 @@ body {
 }
 
 .stat-card {
-  background: white;
+  background: var(--surface-card);
   padding: 1.25rem;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
   transition: all 0.2s ease;
 }
 
 .stat-card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--border-strong);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .stat-label {
-  color: #64748b;
+  color: var(--text-tertiary);
   font-size: 0.875rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -326,31 +413,31 @@ body {
 .stat-value {
   font-size: 2.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-primary);
   letter-spacing: -0.025em;
 }
 
 .stat-card.warning .stat-value {
-  color: #ea580c;
+  color: var(--warning);
 }
 
 .stat-card.success .stat-value {
-  color: #059669;
+  color: var(--success);
 }
 
 .stat-card.danger .stat-value {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .stat-card.info .stat-value {
-  color: #2563eb;
+  color: var(--info);
 }
 
 .card {
-  background: white;
-  border-radius: 10px;
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
   padding: 1.25rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   margin-bottom: 1.25rem;
 }
 
@@ -360,13 +447,13 @@ body {
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 0.875rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .card-title {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-primary);
   letter-spacing: -0.025em;
 }
 
@@ -380,16 +467,16 @@ table {
 }
 
 thead {
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 th {
   text-align: left;
   padding: 0.5rem 0.75rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--text-tertiary);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -397,8 +484,8 @@ th {
 
 td {
   padding: 0.5rem 0.75rem;
-  border-top: 1px solid #f1f5f9;
-  color: #334155;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -407,7 +494,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: #f8fafc;
+  background: var(--bg-muted);
 }
 
 .badge {
@@ -421,69 +508,92 @@ tbody tr:hover {
 }
 
 .badge.success {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--success-subtle);
+  color: var(--success-text);
 }
 
 .badge.warning {
-  background: #fed7aa;
-  color: #92400e;
+  background: var(--warning-subtle);
+  color: var(--warning-text);
 }
 
 .badge.danger {
-  background: #fecaca;
-  color: #991b1b;
+  background: var(--danger-subtle);
+  color: var(--danger-text);
 }
 
 .badge.info {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--info-subtle);
+  color: var(--info-text);
 }
 
 .badge.increasing {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--success-subtle);
+  color: var(--success-text);
 }
 
 .badge.decreasing {
-  background: #fecaca;
-  color: #991b1b;
+  background: var(--danger-subtle);
+  color: var(--danger-text);
 }
 
 .badge.stable {
-  background: #e0e7ff;
-  color: #3730a3;
+  background: var(--accent-subtle);
+  color: var(--accent-text);
 }
 
 .badge.high {
-  background: #fecaca;
-  color: #991b1b;
+  background: var(--danger-subtle);
+  color: var(--danger-text);
 }
 
 .badge.medium {
-  background: #fed7aa;
-  color: #92400e;
+  background: var(--warning-subtle);
+  color: var(--warning-text);
 }
 
 .badge.low {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--info-subtle);
+  color: var(--info-text);
 }
 
 .loading {
   text-align: center;
   padding: 3rem;
-  color: #64748b;
+  color: var(--text-tertiary);
   font-size: 0.938rem;
 }
 
 .error {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
+  background: var(--danger-subtle);
+  border: 1px solid var(--danger);
+  color: var(--danger-text);
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   margin: 1rem 0;
   font-size: 0.938rem;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
 }
 </style>
